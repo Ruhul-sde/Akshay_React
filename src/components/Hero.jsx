@@ -1,66 +1,290 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function Hero() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  const slides = [
+    {
+      image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&h=1080&fit=crop",
+      title: "Innovative Business Solutions",
+      subtitle: "Transform Your Enterprise",
+      description: "Empowering businesses for over 3 decades with comprehensive enterprise software solutions. From implementation to support, we're your trusted technology partner.",
+      color: "from-blue-600 to-purple-600"
+    },
+    {
+      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1920&h=1080&fit=crop",
+      title: "Cloud & AI Integration",
+      subtitle: "Future-Ready Technology",
+      description: "Leverage cutting-edge cloud hosting and artificial intelligence to streamline operations, enhance productivity, and drive digital transformation.",
+      color: "from-emerald-600 to-teal-600"
+    },
+    {
+      image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=1920&h=1080&fit=crop",
+      title: "Expert IT Staffing",
+      subtitle: "Build Your Dream Team",
+      description: "Connect with top-tier IT professionals and payroll management solutions. Scale your team efficiently with our comprehensive staffing services.",
+      color: "from-orange-600 to-red-600"
+    }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX - window.innerWidth / 2) / 50,
+        y: (e.clientY - window.innerHeight / 2) / 50,
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
   return (
-    <section className="min-h-screen flex items-center justify-center bg-white pt-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="space-y-8">
-          {/* Profile Image */}
-          <div className="flex justify-center">
-            <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-200">
-              <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
-                alt="Akshay"
-                className="w-full h-full object-cover"
-              />
+    <section className="relative min-h-screen overflow-hidden pt-16">
+      {/* 3D Background Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Floating 3D Shapes */}
+        <div 
+          className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-purple-600/20 rounded-full blur-xl animate-pulse"
+          style={{
+            transform: `translate3d(${mousePosition.x * 0.5}px, ${mousePosition.y * 0.3}px, 0) rotateX(${mousePosition.y * 0.1}deg) rotateY(${mousePosition.x * 0.1}deg)`
+          }}
+        />
+        <div 
+          className="absolute top-1/3 right-20 w-32 h-32 bg-gradient-to-br from-red-400/20 to-orange-600/20 rounded-2xl blur-xl animate-bounce"
+          style={{
+            transform: `translate3d(${mousePosition.x * -0.3}px, ${mousePosition.y * 0.5}px, 0) rotateX(${mousePosition.y * -0.1}deg) rotateY(${mousePosition.x * -0.1}deg)`,
+            animationDelay: '1s'
+          }}
+        />
+        <div 
+          className="absolute bottom-1/4 left-1/4 w-24 h-24 bg-gradient-to-br from-emerald-400/20 to-teal-600/20 rounded-full blur-xl animate-pulse"
+          style={{
+            transform: `translate3d(${mousePosition.x * 0.8}px, ${mousePosition.y * -0.4}px, 0) rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)`,
+            animationDelay: '2s'
+          }}
+        />
+        
+        {/* Geometric Grid */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent transform rotate-12"></div>
+          <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-white/5 to-transparent transform -rotate-12"></div>
+        </div>
+      </div>
+
+      {/* Slider Container */}
+      <div className="relative h-screen">
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
+              index === currentSlide 
+                ? 'opacity-100 scale-100' 
+                : 'opacity-0 scale-105'
+            }`}
+          >
+            {/* Background Image with Parallax Effect */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000"
+              style={{ 
+                backgroundImage: `url(${slide.image})`,
+                transform: `scale(1.1) translate3d(${mousePosition.x * 0.2}px, ${mousePosition.y * 0.1}px, 0)`
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60"></div>
+              
+              {/* Animated Overlay Pattern */}
+              <div className="absolute inset-0 opacity-20">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse"></div>
+              </div>
+            </div>
+
+            {/* Content with 3D Transform */}
+            <div className="relative z-10 flex items-center justify-center min-h-screen">
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+                <div 
+                  className={`transform transition-all duration-1000 delay-300 ${
+                    index === currentSlide 
+                      ? 'translate-y-0 opacity-100 scale-100' 
+                      : 'translate-y-10 opacity-0 scale-95'
+                  }`}
+                  style={{
+                    transform: `translate3d(${mousePosition.x * 0.1}px, ${mousePosition.y * 0.05}px, 0) ${
+                      index === currentSlide ? 'translateY(0)' : 'translateY(40px)'
+                    }`
+                  }}
+                >
+                  {/* Subtitle with 3D Effect */}
+                  <div className="relative mb-6">
+                    <p className={`text-lg md:text-xl font-medium bg-gradient-to-r ${slide.color} bg-clip-text text-transparent mb-4 tracking-wide uppercase transform hover:scale-105 transition-transform duration-300`}>
+                      {slide.subtitle}
+                    </p>
+                    <div className={`absolute -inset-1 bg-gradient-to-r ${slide.color} rounded-lg blur opacity-20 animate-pulse`}></div>
+                  </div>
+                  
+                  {/* Main Title with Staggered Animation */}
+                  <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                    {slide.title.split(' ').map((word, wordIndex) => (
+                      <span 
+                        key={wordIndex}
+                        className={`inline-block transform transition-all duration-700 hover:scale-110 ${
+                          index === currentSlide 
+                            ? 'translate-y-0 opacity-100' 
+                            : 'translate-y-4 opacity-0'
+                        }`}
+                        style={{
+                          transitionDelay: `${wordIndex * 100 + 400}ms`,
+                          textShadow: '0 4px 20px rgba(0,0,0,0.5)'
+                        }}
+                      >
+                        {word}&nbsp;
+                      </span>
+                    ))}
+                  </h1>
+                  
+                  {/* Description with Typewriter Effect */}
+                  <p 
+                    className={`text-lg md:text-xl text-gray-200 max-w-4xl mx-auto mb-8 leading-relaxed transform transition-all duration-1000 delay-700 ${
+                      index === currentSlide 
+                        ? 'translate-y-0 opacity-100' 
+                        : 'translate-y-6 opacity-0'
+                    }`}
+                    style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
+                  >
+                    {slide.description}
+                  </p>
+
+                  {/* Enhanced CTA Buttons */}
+                  <div 
+                    className={`flex flex-col sm:flex-row gap-6 justify-center items-center transform transition-all duration-1000 delay-900 ${
+                      index === currentSlide 
+                        ? 'translate-y-0 opacity-100' 
+                        : 'translate-y-8 opacity-0'
+                    }`}
+                  >
+                    <a
+                      href="#contact"
+                      className="group relative bg-gradient-to-r from-red-600 to-red-500 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-red-500/25 overflow-hidden"
+                    >
+                      <span className="relative z-10 flex items-center">
+                        Get Free Quote
+                        <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                    </a>
+                    
+                    <a
+                      href="#about"
+                      className="group relative border-2 border-white/30 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:border-white hover:bg-white/10 overflow-hidden"
+                    >
+                      <span className="relative z-10 flex items-center">
+                        Learn More
+                        <svg className="w-5 h-5 ml-2 group-hover:rotate-45 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                      </span>
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+        ))}
+      </div>
 
-          {/* Main Heading */}
-          <div className="space-y-4">
-            <h1 className="text-5xl md:text-7xl font-light text-gray-900">
-              Hi, I'm <span className="font-medium">Akshay</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              A full-stack developer passionate about creating beautiful, functional, and user-centered digital experiences.
-            </p>
-          </div>
+      {/* Enhanced Navigation Arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 lg:left-8 top-1/2 transform -translate-y-1/2 z-20 group bg-white/10 backdrop-blur-md text-white p-4 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110 border border-white/20"
+      >
+        <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
-            <a
-              href="#projects"
-              className="bg-black text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
-            >
-              View My Work
-            </a>
-            <a
-              href="#contact"
-              className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-medium hover:border-gray-400 transition-colors duration-200"
-            >
-              Get In Touch
-            </a>
-          </div>
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 lg:right-8 top-1/2 transform -translate-y-1/2 z-20 group bg-white/10 backdrop-blur-md text-white p-4 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110 border border-white/20"
+      >
+        <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
 
-          {/* Social Links */}
-          <div className="flex justify-center space-x-6 pt-8">
-            <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors duration-200">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-              </svg>
-            </a>
-            <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors duration-200">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-              </svg>
-            </a>
-            <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors duration-200">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-            </a>
+      {/* Enhanced Slide Indicators */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-4">
+        {slides.map((slide, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`relative overflow-hidden rounded-full transition-all duration-500 hover:scale-125 ${
+              index === currentSlide 
+                ? 'w-12 h-3 bg-gradient-to-r from-red-600 to-red-500' 
+                : 'w-3 h-3 bg-white/50 hover:bg-white/75'
+            }`}
+          >
+            {index === currentSlide && (
+              <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-600 animate-pulse"></div>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Floating Statistics Cards */}
+      <div className="absolute bottom-20 left-8 z-20 hidden lg:block">
+        <div 
+          className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 transform hover:scale-105 transition-all duration-300"
+          style={{
+            transform: `translate3d(${mousePosition.x * 0.1}px, ${mousePosition.y * 0.05}px, 0)`
+          }}
+        >
+          <div className="text-3xl font-bold text-white mb-2">3+</div>
+          <div className="text-gray-300 text-sm">Decades of Excellence</div>
+        </div>
+      </div>
+
+      <div className="absolute bottom-20 right-8 z-20 hidden lg:block">
+        <div 
+          className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 transform hover:scale-105 transition-all duration-300"
+          style={{
+            transform: `translate3d(${mousePosition.x * -0.1}px, ${mousePosition.y * -0.05}px, 0)`
+          }}
+        >
+          <div className="text-3xl font-bold text-white mb-2">50+</div>
+          <div className="text-gray-300 text-sm">Trusted Partners</div>
+        </div>
+      </div>
+
+      {/* Enhanced Scroll Indicator */}
+      <div className="absolute bottom-8 right-8 z-20 text-white animate-bounce">
+        <div className="flex flex-col items-center space-y-2">
+          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-white rounded-full animate-pulse mt-2"></div>
           </div>
+          <span className="text-xs text-gray-300 hidden md:block">Scroll</span>
         </div>
       </div>
     </section>
