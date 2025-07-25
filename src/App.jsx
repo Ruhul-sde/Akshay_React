@@ -32,6 +32,8 @@ import AiInsideSales from './pages/AiInsideSales';
 import CrestErp from './pages/CrestErp';
 import ErpCaseStudies from './pages/ErpCaseStudies';
 import ContactUs from './pages/ContactUs';
+import AboutUs from './pages/AboutUs';
+import Blog from './pages/Blog';
 
 import './App.css';
 
@@ -72,6 +74,12 @@ function App() {
 
           {/* Contact Route */}
           <Route path="/contact" element={<ContactUs />} />
+
+          {/* About Route */}
+          <Route path="/about" element={<AboutUs />} />
+
+          {/* Blog Route */}
+          <Route path="/blog" element={<Blog />} />
         </Routes>
         <Footer />
         <ChatWidget />

@@ -1,8 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
+import QuoteModal from '../components/QuoteModal';
 
 export default function ContactUs() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -313,6 +315,12 @@ export default function ContactUs() {
           </form>
         </div>
       </section>
+
+      {/* Quote Modal */}
+      <QuoteModal 
+        isOpen={isQuoteModalOpen} 
+        onClose={() => setIsQuoteModalOpen(false)} 
+      />
     </div>
   );
 }

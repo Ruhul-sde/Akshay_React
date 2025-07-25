@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import QuoteModal from './QuoteModal';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [hoverTimeout, setHoverTimeout] = useState(null);
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -78,13 +80,15 @@ export default function Navbar() {
     },
     { 
       label: 'Blog',
-      href: '#blog',
-      hasDropdown: false
+      href: '/blog',
+      hasDropdown: false,
+      isRoute: true
     },
     { 
       label: 'About Us',
-      href: '#about',
-      hasDropdown: false
+      href: '/about',
+      hasDropdown: false,
+      isRoute: true
     },
     { 
       label: 'Contact Us',
@@ -197,13 +201,13 @@ export default function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden lg:block ml-6">
-            <Link
-              to="/contact"
+            <button
+              onClick={() => setIsQuoteModalOpen(true)}
               className="relative bg-gradient-to-br from-red-600 to-red-500 text-white px-6 py-3 rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300 shadow-md hover:shadow-red-200 hover:from-red-700 hover:to-red-600 group"
             >
               <span className="relative z-10">Get Free Quote</span>
               <span className="absolute inset-0 bg-gradient-to-br from-red-700 to-red-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-            </Link>
+            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -276,18 +280,26 @@ export default function Navbar() {
                 </div>
               ))}
               <div className="pt-4">
-                <Link
-                  to="/contact"
+                <button
+                  onClick={() => {
+                    setIsQuoteModalOpen(true);
+                    setIsMobileMenuOpen(false);
+                  }}
                   className="block w-full text-center bg-gradient-to-br from-red-600 to-red-500 text-white px-4 py-4 rounded-lg text-base font-medium hover:shadow-md transition-all duration-300"
-                  onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Get Free Quote
-                </Link>
+                </button>
               </div>
             </div>
           </div>
         )}
       </div>
+
+      {/* Quote Modal */}
+      <QuoteModal 
+        isOpen={isQuoteModalOpen} 
+        onClose={() => setIsQuoteModalOpen(false)} 
+      />
     </nav>
   );
 }
